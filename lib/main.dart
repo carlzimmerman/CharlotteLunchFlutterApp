@@ -4,13 +4,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-Future<Post> fetchPost() async {
+Future<Restaurant> fetchRestaurant() async {
   final response =
       await http.get('http://www.charlottelunchrandomizer.com/api/restaurants/random?neighborhood_id=1');
 
   if (response.statusCode == 200) {
     // If the call to the server was successful, parse the JSON.
-    return Post.fromJson(json.decode(response.body));
+    return Restaurant.fromJson(json.decode(response.body));
   } else {
     // If that call was not successful, throw an error.
     print(response.statusCode);
@@ -18,7 +18,7 @@ Future<Post> fetchPost() async {
   }
 }
 
-class Post {
+class Restaurant {
   final int id;
   final String name;
   final String address;
@@ -29,10 +29,10 @@ class Post {
   final String website;
   final String hashtag;
 
-  Post({this.id, this.name, this.address, this.directions, this.neighborhoodId, this.createdAt, this.updatedAt, this.website, this.hashtag});
+  Restaurant({this.id, this.name, this.address, this.directions, this.neighborhoodId, this.createdAt, this.updatedAt, this.website, this.hashtag});
 
-  factory Post.fromJson(Map<String, dynamic> json) {
-    return Post(
+  factory Restaurant.fromJson(Map<String, dynamic> json) {
+    return Restaurant(
       id: json['id'],
       name: json['name'],
       address: json['address'],
@@ -56,12 +56,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-Future<Post> post;
+Future<Restaurant> restaurant;
 
   @override
   void initState() {
     super.initState();
-    post = fetchPost();
+    restaurant = fetchRestaurant();
   }
 
   @override
@@ -77,12 +77,26 @@ Future<Post> post;
         ),
         body: ListView(
           children: <Widget>[
-            FutureBuilder<Post>(
-            future: post,
+            FutureBuilder<Restaurant>(
+            future: restaurant,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return Text(snapshot.data.name??'');
-                      //  Text(snapshot.data.website??'');
+                return ListView(
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.all(8),
+                    children: <Widget>[
+                      Container(
+                        height: 50,
+                        color: Colors.blue,
+                        child: Center(child: Text(snapshot.data.name??'')),
+                      ),
+                      Container(
+                        height: 50,
+                        color: Colors.lightBlueAccent,
+                        child: Center(child: Text(snapshot.data.website??'')),
+                      ),
+                    ],
+                  );
               } else if (snapshot.hasError) {
                 return Text("${snapshot.error}");
               }
@@ -97,7 +111,7 @@ Future<Post> post;
             color: Colors.blue,
             onPressed: () {
               setState(() {
-                post = fetchPost();
+                restaurant = fetchRestaurant();
               });
             },
           )
