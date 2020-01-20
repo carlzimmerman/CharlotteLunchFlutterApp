@@ -93,8 +93,8 @@ Future<Post> post;
             ),
           SizedBox(height: 20.0),
           RaisedButton(
-            child: Text("REFRESH"),
-            color: Colors.red,
+            child: Text("Pick again!"),
+            color: Colors.blue,
             onPressed: () {
               setState(() {
                 post = fetchPost();
