@@ -56,8 +56,9 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-Future<Restaurant> restaurant;
+  Future<Restaurant> restaurant;
 
+  String neighborhood = 'Uptown';
   @override
   void initState() {
     super.initState();
@@ -77,6 +78,32 @@ Future<Restaurant> restaurant;
         ),
         body: ListView(
           children: <Widget>[
+            DropdownButton<String>(
+              value: neighborhood,
+              icon: Icon(Icons.arrow_downward),
+              iconSize: 24,
+              elevation: 16,
+              style: TextStyle(
+                color: Colors.blue
+              ),
+              underline: Container(
+                height: 2,
+                color: Colors.blueAccent,
+              ),
+              onChanged: (String newValue) {
+                setState(() {
+                  neighborhood = newValue;
+                });
+              },
+              items: <String>['Uptown', 'Two', 'Three', 'Four']
+                .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                })
+                .toList(),
+            ),
             FutureBuilder<Restaurant>(
             future: restaurant,
             builder: (context, snapshot) {
@@ -93,6 +120,11 @@ Future<Restaurant> restaurant;
                       Container(
                         height: 50,
                         color: Colors.lightBlueAccent,
+                        child: Center(child: Text(snapshot.data.address??'')),
+                      ),
+                      Container(
+                        height: 50,
+                        color: Colors.lightBlueAccent[100],
                         child: Center(child: Text(snapshot.data.website??'')),
                       ),
                     ],
