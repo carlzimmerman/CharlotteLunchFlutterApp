@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 Future<Restaurant> fetchRestaurant() async {
-  final response =
-      await http.get('http://www.charlottelunchrandomizer.com/api/restaurants/random?neighborhood_id=1');
+  final response = await http.get(
+      'https://www.charlottelunchrandomizer.com/api/restaurants/random?neighborhood_id=1');
 
   if (response.statusCode == 200) {
     // If the call to the server was successful, parse the JSON.
@@ -29,7 +29,16 @@ class Restaurant {
   final String website;
   final String hashtag;
 
-  Restaurant({this.id, this.name, this.address, this.directions, this.neighborhoodId, this.createdAt, this.updatedAt, this.website, this.hashtag});
+  Restaurant(
+      {this.id,
+      this.name,
+      this.address,
+      this.directions,
+      this.neighborhoodId,
+      this.createdAt,
+      this.updatedAt,
+      this.website,
+      this.hashtag});
 
   factory Restaurant.fromJson(Map<String, dynamic> json) {
     return Restaurant(
@@ -76,59 +85,55 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: Text('Charlotte Lunch Randomizer'),
         ),
-        body: ListView(
-          children: <Widget>[
-            DropdownButton<String>(
-              value: neighborhood,
-              icon: Icon(Icons.arrow_downward),
-              iconSize: 24,
-              elevation: 16,
-              style: TextStyle(
-                color: Colors.blue
-              ),
-              underline: Container(
-                height: 2,
-                color: Colors.blueAccent,
-              ),
-              onChanged: (String newValue) {
-                setState(() {
-                  neighborhood = newValue;
-                });
-              },
-              items: <String>['Uptown', 'Two', 'Three', 'Four']
-                .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                })
-                .toList(),
+        body: ListView(children: <Widget>[
+          DropdownButton<String>(
+            value: neighborhood,
+            icon: Icon(Icons.arrow_downward),
+            iconSize: 24,
+            elevation: 16,
+            style: TextStyle(color: Colors.blue),
+            underline: Container(
+              height: 2,
+              color: Colors.blueAccent,
             ),
-            FutureBuilder<Restaurant>(
+            onChanged: (String newValue) {
+              setState(() {
+                neighborhood = newValue;
+              });
+            },
+            items: <String>['Uptown', 'Two', 'Three', 'Four']
+                .map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+          ),
+          FutureBuilder<Restaurant>(
             future: restaurant,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return ListView(
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.all(8),
-                    children: <Widget>[
-                      Container(
-                        height: 50,
-                        color: Colors.blue,
-                        child: Center(child: Text(snapshot.data.name??'')),
-                      ),
-                      Container(
-                        height: 50,
-                        color: Colors.lightBlueAccent,
-                        child: Center(child: Text(snapshot.data.address??'')),
-                      ),
-                      Container(
-                        height: 50,
-                        color: Colors.lightBlueAccent[100],
-                        child: Center(child: Text(snapshot.data.website??'')),
-                      ),
-                    ],
-                  );
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.all(8),
+                  children: <Widget>[
+                    Container(
+                      height: 50,
+                      color: Colors.blue,
+                      child: Center(child: Text(snapshot.data.name ?? '')),
+                    ),
+                    Container(
+                      height: 50,
+                      color: Colors.lightBlueAccent,
+                      child: Center(child: Text(snapshot.data.address ?? '')),
+                    ),
+                    Container(
+                      height: 50,
+                      color: Colors.lightBlueAccent[100],
+                      child: Center(child: Text(snapshot.data.website ?? '')),
+                    ),
+                  ],
+                );
               } else if (snapshot.hasError) {
                 return Text("${snapshot.error}");
               }
@@ -136,7 +141,7 @@ class _MyAppState extends State<MyApp> {
               // By default, show a loading spinner.
               return CircularProgressIndicator();
             },
-            ),
+          ),
           SizedBox(height: 20.0),
           RaisedButton(
             child: Text("Pick again!"),
@@ -147,8 +152,7 @@ class _MyAppState extends State<MyApp> {
               });
             },
           )
-          ]
-        ),
+        ]),
       ),
     );
   }
